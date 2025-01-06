@@ -1,22 +1,23 @@
-import { Stack } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import React from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+import BMIHistoryChart from '~/components/profile/BMIHistoryChart';
+import UserDetails from '~/components/profile/UserDetails';
 
-import { ScreenContent } from '~/components/ScreenContent';
-
-export default function Home() {
+const HomeScreen = () => {
   return (
-    <>
-      <Stack.Screen options={{ title: 'Tab One' }} />
-      <View style={styles.container}>
-        <ScreenContent path="app/(tabs)/index.tsx" title="Tab One" />
-      </View>
-    </>
+    <ScrollView contentContainerStyle={styles.container}>
+      <UserDetails />
+      <BMIHistoryChart />
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 24,
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: '#f5f5f5',
   },
 });
+
+export default HomeScreen;

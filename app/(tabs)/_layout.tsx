@@ -1,33 +1,72 @@
-import { Link, Tabs } from 'expo-router';
+import React, { useEffect } from 'react';
+import { Tabs } from 'expo-router';
+import ProfileFormModal from '~/components/profile/ProfileFormModal';
+import { Text } from 'react-native';
+import { useProfile } from '~/context/ProfileContext';
+import { UserProfile } from '~/types/profile';
 
-import { HeaderButton } from '../../components/HeaderButton';
-import { TabBarIcon } from '../../components/TabBarIcon';
+const TabsLayout = () => {
+  const {
+    profile,
+    loading,
+    isProfileFormVisible,
+    showProfileForm, 
+    hideProfileForm, 
+    saveUser,
+    updateProfile,
+  } = useProfile();
 
-export default function TabLayout() {
+  const handleSave = (newProfile: UserProfile) => {
+    saveUser(newProfile);
+    hideProfileForm(); 
+  };
+
+  const handleUpdate = (updatedProfile: UserProfile) => {
+    updateProfile(updatedProfile);
+    hideProfileForm(); 
+  };
+
+  useEffect(() => {
+    if (!loading && !profile) {
+      showProfileForm(); 
+    }
+  }, [profile, loading]);
+
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: 'black',
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <HeaderButton />
-            </Link>
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="two"
-        options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-    </Tabs>
+    <>
+      <Tabs>
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color, size }) => (
+              <Text style={{ color, fontSize: size }}>🏠</Text>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="body-fat"
+          options={{
+            title: 'Body Fat',
+            tabBarIcon: ({ color, size }) => (
+              <Text style={{ color, fontSize: size }}>📊</Text>
+            ),
+          }}
+        />
+      </Tabs>
+
+      {/* only show the modal if no profile exists */}
+      {!profile && (
+        <ProfileFormModal
+          visible={isProfileFormVisible} 
+          onSave={handleSave}
+          onUpdate={handleUpdate}
+          onClose={hideProfileForm} 
+          profile={profile}
+        />
+      )}
+    </>
   );
-}
+};
+
+export default TabsLayout;
