@@ -3,6 +3,7 @@ import '../global.css';
 import { Stack } from 'expo-router';
 import { TouchableOpacity, Text } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ModalProvider } from '~/context/ModalContext';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -13,7 +14,7 @@ export default function RootLayout() {
     <>
           <GestureHandlerRootView style={{ flex: 1 }}>
 
-
+<ModalProvider>
       <ProfileProvider>
         <Stack>
           <Stack.Screen
@@ -21,7 +22,7 @@ export default function RootLayout() {
             options={{
               headerShown: false, // Hide the header for the tabs layout
             }}
-          />
+            />
           <Stack.Screen
             name="modal"
             options={{
@@ -35,6 +36,7 @@ export default function RootLayout() {
             />
         </Stack>
       </ProfileProvider>
+            </ModalProvider>
             </GestureHandlerRootView>
     </>
   );

@@ -7,6 +7,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { useModal } from '~/context/ModalContext';
 
 const FloatingActionButtonGroup = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -15,6 +16,11 @@ const FloatingActionButtonGroup = () => {
   const button3Y = useSharedValue(0);
   const opacity = useSharedValue(0); 
   const scale = useSharedValue(0); 
+
+/// context modal 
+  const { state, dispatch } = useModal();
+
+
 
   const toggleExpansion = () => {
     if (isExpanded) {
@@ -36,6 +42,9 @@ const FloatingActionButtonGroup = () => {
   };
 
 // actions btns
+const handleOpenCamera = () => {
+    dispatch({ type:'OPEN_CAMERA' });
+  };
 
 
 
@@ -63,7 +72,7 @@ const FloatingActionButtonGroup = () => {
   return (
     <View style={styles.floatingButtonContainer}>
       <Animated.View style={[styles.floatingButton, button3Style]}>
-        <TouchableOpacity onPress={() => console.log('Button 3 Pressed')}>
+        <TouchableOpacity onPress={handleOpenCamera}>
           <Ionicons name="camera" size={24} color="#fff" />
         </TouchableOpacity>
       </Animated.View>

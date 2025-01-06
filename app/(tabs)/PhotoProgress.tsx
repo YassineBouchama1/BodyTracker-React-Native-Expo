@@ -4,22 +4,14 @@ import CameraCapture from '~/components/photoProgress/CameraCapture';
 import PhotoOrganization from '~/components/photoProgress/PhotoOrganization';
 
 const PhotoProgressScreen = () => {
-  
-  const [showCamera, setShowCamera] = useState(false);
+
 
   return (
     <View style={styles.container}>
-      {showCamera ? (
-        <CameraCapture onClose={() => setShowCamera(false)} />
-      ) : (
-        <>
-          <TouchableOpacity style={styles.captureButton} onPress={() => setShowCamera(true)}>
-            <Text style={styles.captureButtonText}>Take Progress Photo</Text>
-          </TouchableOpacity>
+
           <PhotoOrganization />
       
-        </>
-      )}
+   
     </View>
   );
 };

@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'expo-router';
 import ProfileFormModal from '~/components/profile/ProfileFormModal';
 import { StyleSheet, Text } from 'react-native';
 import { useProfile } from '~/context/ProfileContext';
 import { UserProfile } from '~/types/profile';
 import FloatingActionButtonGroup from '~/components/FloatingActionButtonGroup'; 
+import CameraCapture from '~/components/photoProgress/CameraCapture';
+import { useModal } from '~/context/ModalContext';
 
 const TabsLayout = () => {
   const {
@@ -16,6 +18,14 @@ const TabsLayout = () => {
     saveUser,
     updateProfile,
   } = useProfile();
+  const { state, dispatch } = useModal();
+
+
+
+  const handleCloseCamera = () => {
+    dispatch({ type:'CLOSE_CAMERA' });
+  };
+
 
   const handleSave = (newProfile: UserProfile) => {
     saveUser(newProfile);
@@ -76,6 +86,9 @@ const TabsLayout = () => {
         onClose={hideProfileForm}
         profile={profile}
       />
+
+{state.isCameraActive &&  <CameraCapture onClose={handleCloseCamera} />}
+     
     </>
   );
 };
