@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import Modal from 'react-native-modal';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -7,12 +7,19 @@ interface ImageModalProps {
   isVisible: boolean;
   imageUri: string;
   onClose: () => void;
-  onSave: (newImageUri: string) => void; 
+  onSave: (newImageUri: string) => void;
 }
 
 const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose, onSave }) => {
   const [filteredImageUri, setFilteredImageUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Reset filteredImageUri when the modal is closed or when a new image is opened
+  useEffect(() => {
+    if (!isVisible) {
+      setFilteredImageUri(null); // Reset filtered image URI when the modal is closed
+    }
+  }, [isVisible]);
 
   const applyFilter = async (filterType: string) => {
     if (!imageUri) return;
@@ -43,8 +50,8 @@ const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose, o
         actions,
         { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
       );
-      setFilteredImageUri(result.uri); 
-      onSave(result.uri); 
+      setFilteredImageUri(result.uri); // Update the filtered image URI
+      onSave(result.uri); // Pass the updated image URI back to the parent
     } catch (error) {
       console.error('Error applying filter:', error);
     } finally {
@@ -53,7 +60,7 @@ const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose, o
   };
 
   const handleClose = () => {
-    onClose(); 
+    onClose(); // Close the modal
   };
 
   return (
