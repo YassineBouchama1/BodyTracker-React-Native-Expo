@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useProfile } from '~/context/ProfileContext';
-
-const UserDetails = () => {
-  const { profile } = useProfile();
+import { UserProfile } from '~/types/profile';
+interface UserDetailsProps {
+  profile: UserProfile | null;
+}
+const UserDetails: React.FC<UserDetailsProps> = ({ profile }) => {
 
   if (!profile) {
     return (

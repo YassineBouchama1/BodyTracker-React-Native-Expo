@@ -2,21 +2,21 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { calculateBMI } from '../utils/calculations';
 import { UserProfile, BMIRecord } from '~/types/profile';
 import { getData, storeData, removeData } from '~/utils/storage';
+import { AppState, AppStateStatus } from 'react-native';
 
 interface ProfileContextType {
   profile: UserProfile | null;
   loading: boolean;
-  isProfileFormVisible: boolean; 
-  showProfileForm: () => void; 
-  hideProfileForm: () => void; 
-
+  loadProfile:()=>void;
+  isProfileFormVisible: boolean;
+  showProfileForm: () => void;
+  hideProfileForm: () => void;
   saveUser: (userData: UserProfile) => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
-  
   deleteProfile: () => Promise<void>;
   getCurrentBMI: () => number | null;
   getBMIHistory: () => BMIRecord[];
-  getBMITrend: () => 'increasing' | 'decreasing' | 'stable' | 'initial' | null; 
+  getBMITrend: () => 'increasing' | 'decreasing' | 'stable' | 'initial' | null;
 }
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -24,21 +24,59 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-
   const [isProfileFormVisible, setIsProfileFormVisible] = useState<boolean>(false);
 
-  // func to show the profile form modal
+  // Load profile data when the app starts or comes to the foreground
+  const loadProfile = async () => {
+    setLoading(true);
+    try {
+      const savedProfile = await getData('userProfile');
+      if (savedProfile) {
+        setProfile(savedProfile);
+      }
+    } catch (error) {
+      console.error('Failed to load profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Track app state changes (foreground/background)
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        // Refresh profile data when the app comes to the foreground
+        loadProfile();
+      }
+    };
+
+    // Add event listener for app state changes
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    // Load profile data when the app starts
+    loadProfile();
+
+    // Clean up the event listener
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  // Show the profile form modal
   const showProfileForm = () => {
     console.log('Showing profile form modal'); // Debug log
     setIsProfileFormVisible(true);
   };
 
-  // func to hide the profile form modal
+  // Hide the profile form modal
   const hideProfileForm = () => {
     setIsProfileFormVisible(false);
   };
 
+
+
+
+  // Save user profile
   const saveUser = async (userData: UserProfile) => {
     setLoading(true);
     try {
@@ -64,6 +102,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
+  // Update user profile
   const updateProfile = async (data: Partial<UserProfile>) => {
     if (!profile) return;
 
@@ -99,6 +138,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
+  // Delete user profile
   const deleteProfile = async () => {
     setLoading(true);
     try {
@@ -111,33 +151,18 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   };
 
-  const loadProfile = async () => {
-    setLoading(true);
-    try {
-      const savedProfile = await getData('userProfile');
-      if (savedProfile) {
-        setProfile(savedProfile);
-      }
-    } catch (error) {
-      console.error('Failed to load profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
+  // Get current BMI
   const getCurrentBMI = () => {
     if (!profile) return null;
     return calculateBMI(profile.weight, profile.height);
   };
 
+  // Get BMI history
   const getBMIHistory = () => {
     return profile?.bmiHistory || [];
   };
 
+  // Get BMI trend
   const getBMITrend = () => {
     if (!profile?.bmiHistory.length) return null;
 
@@ -157,9 +182,10 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
       value={{
         profile,
         loading,
+        loadProfile,
         isProfileFormVisible,
-        showProfileForm, 
-        hideProfileForm, 
+        showProfileForm,
+        hideProfileForm,
         saveUser,
         updateProfile,
         deleteProfile,

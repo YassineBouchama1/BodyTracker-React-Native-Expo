@@ -3,9 +3,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { useProfile } from '~/context/ProfileContext';
 
-const BMIHistoryChart = () => {
-  const { getBMIHistory } = useProfile();
-  const bmiHistory = getBMIHistory();
+interface BMIHistoryChartProps {
+  bmiHistory: { date: string; bmi: number }[];
+}
+
+const BMIHistoryChart: React.FC<BMIHistoryChartProps> = ({ bmiHistory }) => {
+
 
   if (bmiHistory.length === 0) {
     return (
