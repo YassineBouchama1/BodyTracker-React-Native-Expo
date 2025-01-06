@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import BodyFatCalculator from '~/components/body-fat/BodyFatCalculator';
 import { Stack } from 'expo-router';
 import { useProfile } from '~/context/ProfileContext';
@@ -12,10 +12,13 @@ export default function BodyFatScreen() {
   return (
     <>
     <Stack.Screen options={{ title: 'Body fit calculator' }} />
+    <ScrollView>
+
     <BodyFatCalculator
       height={profile.height}
       gender={profile.gender}
       />
+      </ScrollView>
       </>
   );
 }

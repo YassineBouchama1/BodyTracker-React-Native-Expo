@@ -12,6 +12,7 @@ interface ProfileContextType {
 
   saveUser: (userData: UserProfile) => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
+  
   deleteProfile: () => Promise<void>;
   getCurrentBMI: () => number | null;
   getBMIHistory: () => BMIRecord[];
@@ -29,6 +30,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // func to show the profile form modal
   const showProfileForm = () => {
+    console.log('Showing profile form modal'); // Debug log
     setIsProfileFormVisible(true);
   };
 

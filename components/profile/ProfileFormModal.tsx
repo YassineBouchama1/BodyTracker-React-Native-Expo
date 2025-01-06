@@ -10,8 +10,8 @@ import {
   Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Ionicons } from '@expo/vector-icons'; // For icons
-import { LinearGradient } from 'expo-linear-gradient'; // For gradient buttons
+import { Ionicons } from '@expo/vector-icons'; 
+import { LinearGradient } from 'expo-linear-gradient'; 
 import { UserProfile } from '~/types/profile';
 
 interface ProfileFormModalProps {

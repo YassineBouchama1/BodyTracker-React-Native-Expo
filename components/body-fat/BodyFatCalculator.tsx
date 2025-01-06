@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
-
 import { calculateBodyFat } from '../../utils/calculations';
 import { storeData, getData } from '../../utils/storage';
 import { BodyMeasurements } from '~/types/measurements';
@@ -16,14 +14,15 @@ export default function BodyFatCalculator({ height, gender }: BodyFatCalculatorP
     neckCircumference: 0,
     waistCircumference: 0,
     hipCircumference: gender === 'female' ? 0 : undefined,
-    date: new Date()
+    date: new Date(),
   });
-  const [history, setHistory] = useState<Array<{ date: string; bodyFat: number }>>([]);
+
+  const [latestBodyFat, setLatestBodyFat] = useState<number | null>(null);
 
   const handleMeasurementChange = (key: keyof BodyMeasurements, value: string) => {
-    setMeasurements(prev => ({
+    setMeasurements((prev) => ({
       ...prev,
-      [key]: parseFloat(value) || 0
+      [key]: parseFloat(value) || 0,
     }));
   };
 
@@ -31,20 +30,22 @@ export default function BodyFatCalculator({ height, gender }: BodyFatCalculatorP
     const bodyFat = calculateBodyFat(measurements, gender, height);
     const newEntry = {
       date: new Date().toISOString().split('T')[0],
-      bodyFat: Number(bodyFat.toFixed(1))
+      bodyFat: Number(bodyFat.toFixed(1)),
     };
 
-    // Load existing history and append new entry
-    const existingHistory = await getData('bodyFatHistory') || [];
+    // load existing history and append new entry
+    const existingHistory = (await getData('bodyFatHistory')) || [];
     const updatedHistory = [...existingHistory, newEntry];
     await storeData('bodyFatHistory', updatedHistory);
-    setHistory(updatedHistory);
+
+    // set the latest body fat value to display
+    setLatestBodyFat(newEntry.bodyFat);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Body Fat Calculator (US Navy Method)</Text>
-      
+
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Neck Circumference (cm)</Text>
         <TextInput
@@ -82,31 +83,10 @@ export default function BodyFatCalculator({ height, gender }: BodyFatCalculatorP
         <Text style={styles.buttonText}>Calculate Body Fat</Text>
       </TouchableOpacity>
 
-      {history.length > 0 && (
-        <View style={styles.chartContainer}>
-          <Text style={styles.subtitle}>Progress Chart</Text>
-          <LineChart
-            data={{
-              labels: history.slice(-7).map(entry => entry.date),
-              datasets: [{
-                data: history.slice(-7).map(entry => entry.bodyFat)
-              }]
-            }}
-            width={350}
-            height={220}
-            chartConfig={{
-              backgroundColor: '#ffffff',
-              backgroundGradientFrom: '#ffffff',
-              backgroundGradientTo: '#ffffff',
-              decimalPlaces: 1,
-              color: (opacity = 1) => `rgba(0, 122, 255, ${opacity})`,
-              style: {
-                borderRadius: 16
-              }
-            }}
-            style={styles.chart}
-            bezier
-          />
+      {latestBodyFat !== null && (
+        <View style={styles.resultContainer}>
+          <Text style={styles.resultText}>Your Body Fat Percentage:</Text>
+          <Text style={styles.resultValue}>{latestBodyFat}%</Text>
         </View>
       )}
 
@@ -164,18 +144,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  chartContainer: {
-    marginVertical: 20,
+  resultContainer: {
     alignItems: 'center',
+    marginBottom: 20,
   },
-  subtitle: {
+  resultText: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 10,
+    color: '#333',
   },
-  chart: {
-    marginVertical: 8,
-    borderRadius: 16,
+  resultValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#007AFF',
   },
   infoCard: {
     backgroundColor: '#f5f5f5',

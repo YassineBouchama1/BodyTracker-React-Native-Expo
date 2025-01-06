@@ -8,6 +8,9 @@ export interface UserProfile {
     height: number;
     address: string;
     gender: 'male' | 'female';
+    // neckCircumference: number; 
+    // waistCircumference: number; 
+    // hipCircumference?: number; 
     bmiHistory: BMIRecord[];
     createdAt: string;
     updatedAt: string;
