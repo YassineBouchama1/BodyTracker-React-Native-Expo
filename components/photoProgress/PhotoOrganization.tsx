@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { getData } from '../../utils/storage';
-import { MaterialIcons } from '@expo/vector-icons'; // Import icons
-import ImageModal from './ImageModal'; // Import the ImageModal component
+import { MaterialIcons } from '@expo/vector-icons';
+import ImageModal from './ImageModal';
 
 interface Photo {
   uri: string;
@@ -11,9 +11,9 @@ interface Photo {
 
 const PhotoOrganization = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [loadingWeeks, setLoadingWeeks] = useState<{ [key: string]: boolean }>({}); // Track loading state for each week
-  const [selectedImage, setSelectedImage] = useState<string | null>(null); // Track selected image
-  const [isModalVisible, setIsModalVisible] = useState(false); // Track modal visibility
+  const [loadingWeeks, setLoadingWeeks] = useState<{ [key: string]: boolean }>({});
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Fetch photos from AsyncStorage
   useEffect(() => {
@@ -40,14 +40,11 @@ const PhotoOrganization = () => {
 
   const groupedPhotos = groupPhotosByWeek(photos);
 
-  // Simulate video generation (replace with actual logic)
+  // Simulate video generation
   const generateVideoForWeek = async (weekStart: string) => {
-    setLoadingWeeks((prev) => ({ ...prev, [weekStart]: true })); // Set loading state for the week
-
-    // Simulate a delay for video generation (replace with actual logic)
+    setLoadingWeeks((prev) => ({ ...prev, [weekStart]: true }));
     await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    setLoadingWeeks((prev) => ({ ...prev, [weekStart]: false })); // Clear loading state for the week
+    setLoadingWeeks((prev) => ({ ...prev, [weekStart]: false }));
     alert(`Video for week ${weekStart} generated successfully!`);
   };
 
@@ -63,6 +60,15 @@ const PhotoOrganization = () => {
     setSelectedImage(null);
   };
 
+  // Update the photo in the photos state
+  const handleSaveImage = (newImageUri: string) => {
+    setPhotos((prevPhotos) =>
+      prevPhotos.map((photo) =>
+        photo.uri === selectedImage ? { ...photo, uri: newImageUri } : photo
+      )
+    );
+  };
+
   return (
     <View style={styles.container}>
       {Object.keys(groupedPhotos).length > 0 ? (
@@ -76,12 +82,12 @@ const PhotoOrganization = () => {
                 <TouchableOpacity
                   style={styles.generateButton}
                   onPress={() => generateVideoForWeek(item[0])}
-                  disabled={loadingWeeks[item[0]]} // Disable button while loading
+                  disabled={loadingWeeks[item[0]]}
                 >
                   {loadingWeeks[item[0]] ? (
-                    <ActivityIndicator color="#007AFF" /> // Show loading spinner
+                    <ActivityIndicator color="#007AFF" />
                   ) : (
-                    <MaterialIcons name="video-library" size={24} color="#007AFF" /> // Show video icon
+                    <MaterialIcons name="video-library" size={24} color="#007AFF" />
                   )}
                 </TouchableOpacity>
               </View>
@@ -107,6 +113,7 @@ const PhotoOrganization = () => {
         isVisible={isModalVisible}
         imageUri={selectedImage || ''}
         onClose={closeModal}
+        onSave={handleSaveImage} // Pass the callback to handle the updated image
       />
     </View>
   );

@@ -7,31 +7,31 @@ interface ImageModalProps {
   isVisible: boolean;
   imageUri: string;
   onClose: () => void;
+  onSave: (newImageUri: string) => void; 
 }
 
-const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose }) => {
-  const [filteredImageUri, setFilteredImageUri] = useState<string | null>(null); // Track filtered image URI
-  const [loading, setLoading] = useState<boolean>(false); // Track loading state
+const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose, onSave }) => {
+  const [filteredImageUri, setFilteredImageUri] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Apply the selected filter
   const applyFilter = async (filterType: string) => {
     if (!imageUri) return;
 
-    setLoading(true); // Start loading
+    setLoading(true);
 
-    let actions: ImageManipulator.Action[] = []; // Explicitly type actions as Action[]
+    let actions: ImageManipulator.Action[] = [];
     switch (filterType) {
-      case 'grayscale':
-        actions.push({ grayscale: 1 } as unknown as ImageManipulator.Action);
+      // case 'grayscale':
+      //   actions.push({ grayscale: 1 });
+      //   break;
+      // case 'blur':
+      //   actions.push({ blur: 1 });
+      //   break;
+      case 'rotate':
+        actions.push({ rotate: 90 });
         break;
-      case 'sepia':
-        actions.push({ sepia: 1 } as unknown as ImageManipulator.Action);
-        break;
-      case 'brightness':
-        actions.push({ brightness: 0.5 } as unknown as ImageManipulator.Action);
-        break;
-      case 'contrast':
-        actions.push({ contrast: 1.5 } as unknown as ImageManipulator.Action);
+      case 'flip':
+        actions.push({ flip: ImageManipulator.FlipType.Vertical });
         break;
       default:
         break;
@@ -43,21 +43,25 @@ const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose })
         actions,
         { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
       );
-      setFilteredImageUri(result.uri); // Set the filtered image URI
+      setFilteredImageUri(result.uri); 
+      onSave(result.uri); 
     } catch (error) {
       console.error('Error applying filter:', error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
+  const handleClose = () => {
+    onClose(); 
+  };
+
   return (
-    <Modal isVisible={isVisible} onBackdropPress={onClose}>
+    <Modal isVisible={isVisible} onBackdropPress={handleClose}>
       <View style={styles.modalContainer}>
-        {/* Display the filtered image */}
         <View style={styles.imageContainer}>
           {loading ? (
-            <ActivityIndicator size="large" color="#007AFF" /> // Show loading spinner
+            <ActivityIndicator size="large" color="#007AFF" />
           ) : (
             <Image
               source={{ uri: filteredImageUri || imageUri }}
@@ -67,40 +71,38 @@ const ImageModal: React.FC<ImageModalProps> = ({ isVisible, imageUri, onClose })
           )}
         </View>
 
-        {/* Filter buttons */}
         <View style={styles.filterButtonsContainer}>
           <TouchableOpacity
             style={styles.filterButton}
             onPress={() => applyFilter('grayscale')}
-            disabled={loading} // Disable button while loading
+            disabled={loading}
           >
-            <Text style={styles.filterButtonText}>Black & White</Text>
+            <Text style={styles.filterButtonText}>Grayscale</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.filterButton}
-            onPress={() => applyFilter('sepia')}
-            disabled={loading} // Disable button while loading
+            onPress={() => applyFilter('blur')}
+            disabled={loading}
           >
-            <Text style={styles.filterButtonText}>Sepia</Text>
+            <Text style={styles.filterButtonText}>Blur</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.filterButton}
-            onPress={() => applyFilter('brightness')}
-            disabled={loading} // Disable button while loading
+            onPress={() => applyFilter('rotate')}
+            disabled={loading}
           >
-            <Text style={styles.filterButtonText}>Brightness</Text>
+            <Text style={styles.filterButtonText}>Rotate</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.filterButton}
-            onPress={() => applyFilter('contrast')}
-            disabled={loading} // Disable button while loading
+            onPress={() => applyFilter('flip')}
+            disabled={loading}
           >
-            <Text style={styles.filterButtonText}>Contrast</Text>
+            <Text style={styles.filterButtonText}>Flip</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Close button */}
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </View>
