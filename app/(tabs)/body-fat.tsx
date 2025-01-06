@@ -2,6 +2,7 @@ import { ScrollView, Text, View } from 'react-native';
 import BodyFatCalculator from '~/components/body-fat/BodyFatCalculator';
 import { Stack } from 'expo-router';
 import { useProfile } from '~/context/ProfileContext';
+import React from 'react';
 
 export default function BodyFatScreen() {
   const { profile ,loading } = useProfile();

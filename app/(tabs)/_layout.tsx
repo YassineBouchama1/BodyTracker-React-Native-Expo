@@ -54,6 +54,16 @@ const TabsLayout = () => {
             ),
           }}
         />
+            <Tabs.Screen
+          name="PhotoProgress"
+          options={{
+            title: 'Photo Progress',
+            tabBarIcon: ({ color, size }) => (
+              <Text style={{ color, fontSize: size }}>📊</Text>
+            ),
+          }}
+        />
+
       </Tabs>
 
   {/* Floating Button */}
@@ -87,20 +97,20 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 20,
     alignItems: 'flex-end',
-    gap: 10, // Space between buttons
+    gap: 10, 
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 70, // Distance from the bottom
-    right: 20, // Distance from the right
-    backgroundColor: '#6a11cb', // Button color
-    width: 56, // Button size
+    bottom: 70, 
+    right: 20, 
+    backgroundColor: '#6a11cb',
+    width: 56, 
     height: 56,
-    borderRadius: 28, // Make it circular
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
+    elevation: 5, 
+    shadowColor: '#000', 
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
