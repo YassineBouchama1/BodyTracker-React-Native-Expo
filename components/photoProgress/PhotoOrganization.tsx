@@ -3,6 +3,7 @@ import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndi
 import { getData } from '../../utils/storage';
 import { MaterialIcons } from '@expo/vector-icons';
 import ImageModal from './ImageModal';
+import useVideoGeneration from '~/hooks/useVideoGeneration';
 
 interface Photo {
   uri: string;
@@ -11,9 +12,9 @@ interface Photo {
 
 const PhotoOrganization = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [loadingWeeks, setLoadingWeeks] = useState<{ [key: string]: boolean }>({});
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { loadingWeeks, generateVideoForWeek } = useVideoGeneration();
 
   // Fetch photos from AsyncStorage
   useEffect(() => {
@@ -40,13 +41,6 @@ const PhotoOrganization = () => {
 
   const groupedPhotos = groupPhotosByWeek(photos);
 
-  // Simulate video generation
-  const generateVideoForWeek = async (weekStart: string) => {
-    setLoadingWeeks((prev) => ({ ...prev, [weekStart]: true }));
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    setLoadingWeeks((prev) => ({ ...prev, [weekStart]: false }));
-    alert(`Video for week ${weekStart} generated successfully!`);
-  };
 
   // Open modal with selected image
   const openModal = (imageUri: string) => {

@@ -2,6 +2,7 @@ import { ProfileProvider } from '~/context/ProfileContext';
 import '../global.css';
 import { Stack } from 'expo-router';
 import { TouchableOpacity, Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -10,6 +11,9 @@ export const unstable_settings = {
 export default function RootLayout() {
   return (
     <>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+
+
       <ProfileProvider>
         <Stack>
           <Stack.Screen
@@ -28,9 +32,10 @@ export default function RootLayout() {
                 </TouchableOpacity>
               ),
             }}
-          />
+            />
         </Stack>
       </ProfileProvider>
+            </GestureHandlerRootView>
     </>
   );
 }

@@ -4,6 +4,7 @@ import CameraCapture from '~/components/photoProgress/CameraCapture';
 import PhotoOrganization from '~/components/photoProgress/PhotoOrganization';
 
 const PhotoProgressScreen = () => {
+  
   const [showCamera, setShowCamera] = useState(false);
 
   return (
