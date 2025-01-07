@@ -8,9 +8,6 @@ interface ProfileContextType {
   profile: UserProfile | null;
   loading: boolean;
   loadProfile:()=>void;
-  isProfileFormVisible: boolean;
-  showProfileForm: () => void;
-  hideProfileForm: () => void;
   saveUser: (userData: UserProfile) => Promise<void>;
   updateProfile: (data: Partial<UserProfile>) => Promise<void>;
   deleteProfile: () => Promise<void>;
@@ -24,7 +21,6 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isProfileFormVisible, setIsProfileFormVisible] = useState<boolean>(false);
 
   // Load profile data when the app starts or comes to the foreground
   const loadProfile = async () => {
@@ -62,16 +58,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
     };
   }, []);
 
-  // Show the profile form modal
-  const showProfileForm = () => {
-    console.log('Showing profile form modal'); // Debug log
-    setIsProfileFormVisible(true);
-  };
 
-  // Hide the profile form modal
-  const hideProfileForm = () => {
-    setIsProfileFormVisible(false);
-  };
 
 
 
@@ -183,9 +170,7 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
         profile,
         loading,
         loadProfile,
-        isProfileFormVisible,
-        showProfileForm,
-        hideProfileForm,
+    
         saveUser,
         updateProfile,
         deleteProfile,

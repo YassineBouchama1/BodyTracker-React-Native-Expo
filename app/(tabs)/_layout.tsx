@@ -1,96 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { Tabs } from 'expo-router';
-import ProfileFormModal from '~/components/profile/ProfileFormModal';
-import { StyleSheet, Text } from 'react-native';
+import React, { useEffect } from 'react';
+import { Tabs, useRouter, useFocusEffect } from 'expo-router';
+import { Text } from 'react-native';
 import { useProfile } from '~/context/ProfileContext';
-import { UserProfile } from '~/types/profile';
-import FloatingActionButtonGroup from '~/components/FloatingActionButtonGroup'; 
-import CameraCapture from '~/components/photoProgress/CameraCapture';
-import { useModal } from '~/context/ModalContext';
+import FloatingActionButtonGroup from '~/components/FloatingActionButtonGroup';
+import { StyleSheet } from 'react-native';
 
 const TabsLayout = () => {
-  const {
-    profile,
-    loading,
-    isProfileFormVisible,
-    showProfileForm,
-    hideProfileForm,
-    saveUser,
-    updateProfile,
-  } = useProfile();
-  const { state, dispatch } = useModal();
+  const { profile, loading } = useProfile();
+  const router = useRouter();
 
-
-
-  const handleCloseCamera = () => {
-    dispatch({ type:'CLOSE_CAMERA' });
-  };
-
-
-  const handleSave = (newProfile: UserProfile) => {
-    saveUser(newProfile);
-    hideProfileForm();
-  };
-
-  const handleUpdate = (updatedProfile: UserProfile) => {
-    updateProfile(updatedProfile);
-    hideProfileForm();
-  };
-
-  useEffect(() => {
-    if (!loading && !profile) {
-      showProfileForm();
+  useFocusEffect(() => {
+    if (!profile && !loading) {
+      router.replace('/profile');
     }
-  }, [profile, loading]);
+  });
 
   return (
     <>
       <Tabs>
-        <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Home',
-            tabBarIcon: ({ color, size }) => (
-              <Text style={{ color, fontSize: size }}>🏠</Text>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="body-fat"
-          options={{
-            title: 'Body Fat',
-            tabBarIcon: ({ color, size }) => (
-              <Text style={{ color, fontSize: size }}>📊</Text>
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="PhotoProgress"
-          options={{
-            title: 'Photo Progress',
-            tabBarIcon: ({ color, size }) => (
-              <Text style={{ color, fontSize: size }}>📊</Text>
-            ),
-          }}
-        />
+        <Tabs.Screen name="index" options={{ title: 'Home', tabBarIcon: TabIcon('🏠') }} />
+        <Tabs.Screen name="body-fat" options={{ title: 'Body Fat', tabBarIcon: TabIcon('📊') }} />
+        <Tabs.Screen name="PhotoProgress" options={{ title: 'Photo Progress', tabBarIcon: TabIcon('📷') }} />
       </Tabs>
 
-      {/* Use the FloatingActionButtonGroup component */}
       <FloatingActionButtonGroup />
-
-      {/* only show the modal if no profile exists */}
-      <ProfileFormModal
-        visible={isProfileFormVisible}
-        onSave={handleSave}
-        onUpdate={handleUpdate}
-        onClose={hideProfileForm}
-        profile={profile}
-      />
-
-{state.isCameraActive &&  <CameraCapture onClose={handleCloseCamera} />}
-     
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+});
+
+const TabIcon = (icon: string) => ({ color, size }: { color: string; size: number }) => (
+  <Text style={{ color, fontSize: size }}>{icon}</Text>
+);
 
 export default TabsLayout;

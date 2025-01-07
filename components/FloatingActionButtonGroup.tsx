@@ -7,18 +7,21 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { Link } from 'expo-router';
 import { useModal } from '~/context/ModalContext';
 
 const FloatingActionButtonGroup = () => {
+
   const [isExpanded, setIsExpanded] = useState(false);
+  const {dispatch} = useModal()
+
+
+
   const button1Y = useSharedValue(0);
   const button2Y = useSharedValue(0);
   const button3Y = useSharedValue(0);
   const opacity = useSharedValue(0); 
   const scale = useSharedValue(0); 
-
-/// context modal 
-  const { state, dispatch } = useModal();
 
 
 
@@ -41,10 +44,6 @@ const FloatingActionButtonGroup = () => {
     setIsExpanded(!isExpanded);
   };
 
-// actions btns
-const handleOpenCamera = () => {
-    dispatch({ type:'OPEN_CAMERA' });
-  };
 
 
 
@@ -71,16 +70,20 @@ const handleOpenCamera = () => {
 
   return (
     <View style={styles.floatingButtonContainer}>
-      <Animated.View style={[styles.floatingButton, button3Style]}>
-        <TouchableOpacity onPress={handleOpenCamera}>
-          <Ionicons name="camera" size={24} color="#fff" />
-        </TouchableOpacity>
-      </Animated.View>
+  <Animated.View style={[styles.floatingButton, button3Style]}>
+  <Link href="/camera" asChild>
+    <TouchableOpacity>
+      <Ionicons name="camera" size={24} color="#fff" />
+    </TouchableOpacity>
+  </Link>
+</Animated.View>
 
       <Animated.View style={[styles.floatingButton, button2Style]}>
-        <TouchableOpacity onPress={() => console.log('Button 2 Pressed')}>
-          <Ionicons name="image" size={24} color="#fff" />
+      <Link href="/profile" asChild>
+        <TouchableOpacity >
+          <Ionicons name="settings" size={24} color="#fff" />
         </TouchableOpacity>
+        </Link>
       </Animated.View>
 
       <Animated.View style={[styles.floatingButton, button1Style]}>
@@ -102,6 +105,9 @@ const styles = StyleSheet.create({
     bottom: 70,
     right: 20,
     zIndex: 1,
+  
+
+   
   },
   floatingButton: {
     backgroundColor: '#6a11cb',

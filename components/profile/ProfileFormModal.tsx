@@ -10,8 +10,8 @@ import {
   Platform,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { Ionicons } from '@expo/vector-icons'; 
-import { LinearGradient } from 'expo-linear-gradient'; 
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { UserProfile } from '~/types/profile';
 
 interface ProfileFormModalProps {
@@ -80,16 +80,25 @@ const ProfileFormModal: React.FC<ProfileFormModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal
+      animationType="slide"
+      transparent
+      visible={visible}
+    
+     
+    >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <Text style={styles.title}>
               {profile ? 'Update Profile' : 'Complete Profile'}
             </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#333" />
-            </TouchableOpacity>
+
+            {profile && (
+              <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <Ionicons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            )}
           </View>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.inputContainer}>
@@ -191,11 +200,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'red',
+    zIndex: 1,
   },
   modalContainer: {
     width: '90%',
     backgroundColor: '#fff',
+   
     borderRadius: 20,
     padding: 20,
     maxHeight: '80%',
@@ -208,6 +220,14 @@ const styles = StyleSheet.create({
       },
       android: {
         elevation: 5,
+    backgroundColor: 'yellow',
+    width: '90%',
+
+   
+    borderRadius: 20,
+    padding: 20,
+    maxHeight: '80%',
+
       },
     }),
   },
