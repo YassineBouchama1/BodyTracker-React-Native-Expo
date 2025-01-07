@@ -18,8 +18,16 @@ interface ProfileContextType {
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
 
-export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+interface ProfileProviderProps {
+  children: React.ReactNode;
+  initialProfile: UserProfile | null;
+}
+
+export const ProfileProvider: React.FC<ProfileProviderProps> = ({ 
+  children, 
+  initialProfile 
+}) => {
+  const [profile, setProfile] = useState<UserProfile | null>(initialProfile);
   const [loading, setLoading] = useState<boolean>(false);
 
   // Load profile data when the app starts or comes to the foreground

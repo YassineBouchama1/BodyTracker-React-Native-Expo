@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { Tabs, useRouter, useFocusEffect } from 'expo-router';
 import { Text } from 'react-native';
 import { useProfile } from '~/context/ProfileContext';
