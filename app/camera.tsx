@@ -77,7 +77,7 @@ export default function CameraCapture() {
         console.log('Photo metadata saved to AsyncStorage');
 
         // Navigate back after saving
-        router.back();
+        router.replace('/(tabs)/PhotoProgress');
       } catch (error) {
         console.error('Error saving photo:', error);
       }

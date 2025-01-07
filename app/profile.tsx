@@ -8,6 +8,7 @@ import {
   ScrollView,
   Platform,
   Alert,
+  BackHandler,
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,9 +79,28 @@ const ProfileFormPage: React.FC = () => {
 
 
 
+  // block user to back previews page
+useEffect(() => {
+  const backAction = () => {
+  
+    return true;
+  };
+
+  const backHandler = BackHandler.addEventListener(
+    'hardwareBackPress',
+    backAction
+  );
+
+  return () => backHandler.remove(); 
+}, []);
+
   return (
     <>
-    <Stack.Screen options={{headerShown:false}}/>
+ <Stack.Screen options={{ 
+  headerShown: true,
+  headerLeft: () => null, 
+  title: profile ? 'Update Profile' : 'Complete Profile'
+}} />
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>
